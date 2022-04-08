@@ -1,0 +1,59 @@
+# Project : R Bootcamp
+# Purpose : Dtree
+# First Name : Shivani
+# Last Name : Raykar
+# CWID : 10474706 
+# Date :  03/22/2022
+
+
+# clearing object environment
+rm(list = ls())
+
+#install.packages('rpart')
+#install.packages(class)
+library(class)
+library(rpart)
+
+#Reading the dataSet
+name <- file.choose()
+dataSet <- read.csv(name) 
+View(dataSet)
+
+#Summarizing the columns
+summary(dataSet)
+
+n <- as.numeric(as.character(dataSet$F6))
+dataSet$F6 <- n
+summary(dataSet, na.rm = TRUE)
+
+#Remove the rows with missing values 
+dataSet <- na.omit(dataSet)
+summary(dataSet)
+
+#Convert labels to factor class
+dataSet$Class<- factor(dataSet$Class , levels = c("2","4") , labels = c("Benign","Malignant"))
+#Check if factor class
+is.factor(dataSet$Class)
+class(dataSet$Class)
+#View(dataSet)
+
+#Train and test in the ratio 70% to 30%
+dataSet<- dataSet[2:11]
+train_index <- sample(nrow(dataSet), as.integer(.70*nrow(dataSet)))
+
+train_data <- dataSet[train_index,]
+test_data <- dataSet[-train_index,]
+
+#Implementing the cart
+cart <- rpart(Class ~ ., data = train_data, method = "class")
+prediction <- predict(cart, test_data, type = "class")
+
+conf_matrix <- table(prediction, test_data$Class)
+print(conf_matrix)
+
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(conf_matrix)
+
+# clearing object environment
+rm(list=ls())
+

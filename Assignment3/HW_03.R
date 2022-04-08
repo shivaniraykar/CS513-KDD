@@ -1,0 +1,81 @@
+# Company : Stevens Institute of Technology
+# Project : K Nearest Neighbors(knn)
+# Purpose : K Nearest Neighbors(knn)
+# First Name : Shivani
+# Last Name : Raykar
+# CWID : 10474706 
+# Date :  02/20/2022
+
+#Delete all the objects from your R- environment. 
+rm(list=ls())
+
+#Load the “breast-cancer-wisconsin.csv” from canvas into R
+name <- file.choose()
+df <- read.csv(name)
+
+#convert F6 to numeric data
+n <- as.numeric(as.character(df$F6))
+df$F6 <- n
+
+#Remove the rows with missing values 
+df <- na.omit(df)
+
+#Convert labels to factor class
+df$Class<- factor(df$Class , levels = c("2","4") , labels = c("Benign","Malignant"))
+
+#Generate 30% test 70% training data
+size <- sample(1:nrow(df), 0.7 * nrow(df)) 
+nor <-function(x) { (x -min(x))/(max(x)-min(x))   }
+
+#Run nomalization on first 2-10 coulumns of dataset because they are the predictors
+norm <- as.data.frame(lapply(df[,c(2,3,4,5,6,7,8,9,10)], nor))
+df2 = df['Class']
+
+#train set
+train_set <- norm[size,] 
+cl_train <- df2[size,]
+
+##test set
+test_set <- norm[-size,] 
+cl_test <- df2[-size,]
+
+#load the package class
+library(class)
+
+##### Running KNN for k = 3 #####
+Knn_3 = knn(train_set, test_set, cl = cl_train, k=3)
+
+#create confusion matrix
+conf_matrix = table(Knn_3, cl_test)
+print(conf_matrix)
+
+#Accuracy - this function divides the correct predictions by total number of predictions that tell us how accurate the model is.
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+x <- accuracy(conf_matrix)
+cat(x,"%")
+
+
+##### Running KNN for k = 5 #####
+Knn_5 = knn(train_set, test_set, cl = cl_train, k=5)
+
+#create confusion matrix
+conf_matrix = table(Knn_5, cl_test)
+print(conf_matrix)
+
+#Accuracy - this function divides the correct predictions by total number of predictions that tell us how accurate the model is.
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+y <- accuracy(conf_matrix)
+cat(y, "%")
+
+
+##### Running KNN for k = 10 #####
+Knn_10 = knn(train_set, test_set, cl = cl_train, k=10)
+
+#create confusion matrix
+conf_matrix = table(Knn_10, cl_test)
+print(conf_matrix)
+
+#Accuracy - this function divides the correct predictions by total number of predictions that tell us how accurate the model is.
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+z <- accuracy(conf_matrix)
+cat(z, "%")

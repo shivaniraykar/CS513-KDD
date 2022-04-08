@@ -1,0 +1,25 @@
+# clearing object environment
+rm(list = ls())
+
+#install.packages('rpart')
+#install.packages(class)
+library(class)
+library(rpart)
+
+#Reading the dataSet
+name <- file.choose()
+dataSet <- read.csv(name) 
+View(dataSet)
+
+#Summarizing the columns
+summary(dataSet)
+
+n <- as.numeric(as.character(dataSet$F6))
+dataSet$F6 <- n
+summary(dataSet, na.rm = TRUE)
+
+#Remove the rows with missing values 
+dataSet <- na.omit(dataSet)
+summary(dataSet)
+
+View(dataSet)

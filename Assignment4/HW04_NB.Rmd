@@ -1,0 +1,51 @@
+# Company : Stevens Institute of Technology
+# Project : R Bootcamp
+# Purpose : Naïve Bayes Methodology
+# First Name : Shivani
+# Last Name : Raykar
+# CWID : 10474706 
+# Date :  03/07/2022
+
+#clearing the environment
+rm(list=ls())
+
+#Install and load the pacakages
+#install.packages("e1071")
+#install.packages(class)
+library(e1071)
+library(class) 
+
+file <- file.choose()
+db <- read.csv(file) 
+
+#omit rows with missing values
+db <- na.omit(db)
+
+#convert the integer data for column F6 to 
+db$F6 <- as.integer(db$F6)
+#summary(db)
+
+#Converting to factor data
+db$Class <- factor(db$Class, levels = c(2,4), labels = c("benign", "malignant"))
+#View(db)
+
+dataSet<- db[2:11]
+
+#set the seed data
+set.seed(123)
+
+#partition the data
+train_index = sample(seq_len(nrow(dataSet)), size = floor(0.70 * nrow(dataSet)))
+train_data = dataSet[train_index,]
+test_data = dataSet[-train_index,]
+
+#Naive Bayes
+model <- naiveBayes(Class~., data=train_data)
+prediction <- predict(model, test_data)
+conf_matrix <- table(predict_nb = prediction, class = test_data$Class)
+print(conf_matrix)
+
+accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
+accuracy(conf_matrix)
+
+rm(list=ls())
